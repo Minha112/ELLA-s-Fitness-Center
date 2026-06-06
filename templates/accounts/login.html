@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - ELLA's Fitness Center{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-brand">
+            <h1>ELLA'S</h1>
+            <p>FITNESS CENTER</p>
+            <h3 class="mt-10" style="font-weight: 500; font-size: 1.1rem; color: var(--gold);">Welcome Back!</h3>
+        </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <span class="form-error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <span class="form-error">{{ form.password.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; margin-top: 10px;">
+                Login
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{% url 'register' %}">Sign Up</a>
+            <br>
+            <a href="{% url 'home' %}" style="display: inline-block; margin-top: 15px; font-size: 0.75rem; color: var(--text-muted);">← Back to Homepage</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

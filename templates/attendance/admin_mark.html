@@ -1,0 +1,99 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Mark Attendance - ELLA's Fitness Center{% endblock %}
+{% block header_title %}ATTENDANCE MANAGEMENT{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>Daily Attendance Registry</h2>
+    <a href="{% url 'attendance_report' %}" class="btn btn-outline">View Monthly Report</a>
+</div>
+
+<!-- Date Selection Card -->
+<div class="card mb-20">
+    <form method="get" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <label for="date-picker" style="font-weight: 500; font-size: 0.9rem; margin-bottom: 0;">Select Registry Date:</label>
+        <input type="date" id="date-picker" name="date" value="{{ selected_date|date:'Y-m-d' }}" style="width: auto;" max="{{ today|date:'Y-m-d' }}">
+        <button type="submit" class="btn btn-outline">Load Registry</button>
+        {% if selected_date != today %}
+            <a href="{% url 'admin_attendance' %}" class="btn btn-danger btn-sm">Reset Today</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Attendance Registry Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Marking Attendance for: <span class="text-gold">{{ selected_date|date:"d M Y, l" }}</span></h3>
+        <span class="badge badge-gold">Active Members</span>
+    </div>
+
+    <form method="post" action="{% url 'save_attendance' %}">
+        {% csrf_token %}
+        <input type="hidden" name="attendance_date" value="{{ selected_date|date:'Y-m-d' }}">
+
+        <div class="table-container mb-20">
+            {% if members %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Member Name</th>
+                            <th>Morning Session (6 AM - 11 AM)</th>
+                            <th>Evening Session (5 PM - 9 PM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for item in members %}
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600; color: #fff;">
+                                            {{ item.user.get_full_name }}
+                                        </div>
+                                        <div style="font-size: 0.72rem; color: var(--text-muted);">
+                                            {{ item.user.email }}
+                                        </div>
+                                    </td>
+
+                                            <td class="attendance-cell">
+                                            <div class="attendance-wrapper">
+                                                <label class="toggle">
+                                                    <input type="checkbox"
+                                                        name="morning_{{ item.user.id }}"
+                                                        {% if item.morning %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="attendance-label">Attended</span>
+                </div>
+            </td>
+
+            <td class="attendance-cell">
+                <div class="attendance-wrapper">
+                    <label class="toggle">
+                        <input type="checkbox"
+                               name="evening_{{ item.user.id }}"
+                               {% if item.evening %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="attendance-label">Attended</span>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+                </table>
+            {% else %}
+                <div class="empty-state" style="padding: 30px;">
+                    <h3>No active gym memberships found for this date.</h3>
+                    <p>Make sure members have active subscriptions to appear in the registry.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if members %}
+            <div style="text-align: right;">
+                <button type="submit" class="btn btn-gold btn-lg">Save Attendance Registry</button>
+            </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h2>ELLA'S</h2>
+        <small>Fitness Center</small>
+    </div>
+    
+    <div class="sidebar-nav">
+        {% if user.is_admin_user %}
+            <div class="nav-section">Admin Panel</div>
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <span class="icon">📊</span> Dashboard
+            </a>
+            <a href="{% url 'member_list' %}" class="{% if 'member' in request.path %}active{% endif %}">
+                <span class="icon">👥</span> Member Management
+            </a>
+            <a href="{% url 'admin_attendance' %}" class="{% if 'attendance' in request.path %}active{% endif %}">
+                <span class="icon">📅</span> Mark Attendance
+            </a>
+            <a href="{% url 'admin_payments' %}" class="{% if 'payments' in request.path and 'admin' in request.path %}active{% endif %}">
+                <span class="icon">💳</span> Payment Records
+            </a>
+            <a href="{% url 'admin_reminders' %}" class="{% if 'reminders' in request.path and 'admin' in request.path %}active{% endif %}">
+                <span class="icon">🔔</span> Reminders
+            </a>
+        {% else %}
+            <div class="nav-section">Member Menu</div>
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'client_dashboard' %}active{% endif %}">
+                <span class="icon">📊</span> Dashboard
+            </a>
+            <a href="{% url 'join_gym' %}" class="{% if 'join' in request.path or 'checkout' in request.path %}active{% endif %}">
+                <span class="icon">🏋️‍♂️</span> Join / Renew Gym
+            </a>
+            <a href="{% url 'my_membership' %}" class="{% if 'my-membership' in request.path %}active{% endif %}">
+                <span class="icon">🏷️</span> My Membership
+            </a>
+            <a href="{% url 'client_attendance' %}" class="{% if 'attendance' in request.path and 'my' in request.path %}active{% endif %}">
+                <span class="icon">📅</span> Attendance History
+            </a>
+            <a href="{% url 'payment_history' %}" class="{% if 'payments' in request.path and 'history' in request.path %}active{% endif %}">
+                <span class="icon">💳</span> Payment History
+            </a>
+            <a href="{% url 'my_notifications' %}" class="{% if 'reminders' in request.path and 'my' in request.path %}active{% endif %}">
+                <span class="icon">🔔</span> Notifications
+            </a>
+        {% endif %}
+
+        <div class="nav-section">Settings</div>
+        <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <span class="icon">👤</span> My Profile
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'logout' %}">
+            <span class="icon">🚪</span> Logout
+        </a>
+    </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>

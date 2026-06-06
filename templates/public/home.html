@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ELLA's Fitness Center - STRONGER TODAY, BETTER TOMORROW{% endblock %}
+
+{% block body %}
+<div class="landing-page">
+    <nav class="landing-nav">
+        <div class="brand">ELLA'S FITNESS CENTER</div>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-gold btn-sm">Dashboard</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline btn-sm">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-gold btn-sm">Join Now</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>STRONGER TODAY<br><span class="gold">BETTER TOMORROW</span></h1>
+        <p>Transform your body, elevate your lifestyle, and become the best version of yourself at ELLA'S Fitness Center.</p>
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'join_gym' %}" class="btn btn-gold btn-lg">View Membership Plans</a>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline btn-lg">Go to Dashboard</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-gold btn-lg">Start Your Journey</a>
+                <a href="#plans" class="btn btn-outline btn-lg">Explore Plans</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <section class="features-section">
+        <h2>Why Choose ELLA'S?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="icon">🏋️‍♂️</div>
+                <h3>Modern Equipment</h3>
+                <p>Top-tier cardiovascular and strength training machinery for optimal performance.</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">🧑‍🏫</div>
+                <h3>Expert Trainers</h3>
+                <p>Personalized workout routines guided by professional certified trainers.</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">🥗</div>
+                <h3>Diet Plans</h3>
+                <p>Comprehensive nutrition guides customized to fit your health and workout goals.</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon">🧼</div>
+                <h3>Clean & Safe</h3>
+                <p>Highly sanitized environment adhering to strict hygiene and safety protocols.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="plans-section" id="plans">
+        <h2>Our Membership Plans</h2>
+        <div class="plans-grid">
+            {% for plan in plans %}
+                <div class="plan-card {% if plan.popular %}popular{% endif %}">
+                    <h3>{{ plan.name }} Membership</h3>
+                    <div class="price">₹{{ plan.price }}<span> / {{ plan.duration }}</span></div>
+                    <div class="duration" style="margin-bottom: 25px;">
+                        <p style="margin-bottom: 8px;">✓ Gym Access</p>
+                        <p style="margin-bottom: 8px;">✓ Morning & Evening Sessions</p>
+                        {% if plan.key == '3_MONTH' or plan.key == '6_MONTH' %}
+                            <p style="margin-bottom: 8px;">✓ Personal Support Trainer</p>
+                        {% endif %}
+                        {% if plan.key == '6_MONTH' %}
+                            <p style="margin-bottom: 8px;">✓ Custom Diet & Nutrition Guide</p>
+                        {% endif %}
+                    </div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'select_plan' plan.key %}" class="btn btn-gold" style="width: 100%; justify-content: center;">Choose Plan</a>
+                    {% else %}
+                        <a href="{% url 'register' %}?plan={{ plan.key }}" class="btn btn-gold" style="width: 100%; justify-content: center;">Join & Pay</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer class="landing-footer">
+        <p>&copy; {% now "Y" %} ELLA'S Fitness Center. Stronger Today, Better Tomorrow.</p>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">Test Mode Enabled (Simulated Payment Processing)</p>
+    </footer>
+</div>
+{% endblock %}

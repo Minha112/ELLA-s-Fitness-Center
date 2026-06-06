@@ -1,0 +1,44 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Payment Successful - ELLA's Fitness Center{% endblock %}
+{% block header_title %}PAYMENT SUCCESSFUL{% endblock %}
+
+{% block content %}
+<div class="success-page">
+    <div class="success-icon">✔️</div>
+    <h2>Payment Successful!</h2>
+    <p>Your membership has been activated successfully. Check out your transaction receipt below.</p>
+
+    <div class="success-details">
+        <div class="row">
+            <span class="label">Transaction ID</span>
+            <code>{{ payment.transaction_id }}</code>
+        </div>
+        <div class="row">
+            <span class="label">Amount Paid</span>
+            <strong style="color: var(--gold);">₹{{ payment.amount }}</strong>
+        </div>
+        <div class="row">
+            <span class="label">Payment Date</span>
+            <span>{{ payment.created_at|date:"d M Y, h:i A" }}</span>
+        </div>
+        <div class="row">
+            <span class="label">Membership Plan</span>
+            <span>{{ payment.membership.get_plan_display }}</span>
+        </div>
+        <div class="row">
+            <span class="label">Validity Expiry</span>
+            <span>{{ payment.membership.end_date|date:"d M Y" }}</span>
+        </div>
+        <div class="row">
+            <span class="label">Payment Method</span>
+            <span>{{ payment.payment_method }}</span>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: center; max-width: 400px; margin: 25px auto 0;">
+        <a href="{% url 'dashboard' %}" class="btn btn-gold" style="flex: 1; justify-content: center;">Go to Dashboard</a>
+        <button onclick="window.print();" class="btn btn-outline" style="flex: 1; justify-content: center;">Print Receipt</button>
+    </div>
+</div>
+{% endblock %}

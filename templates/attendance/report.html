@@ -1,0 +1,83 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Attendance Report - ELLA's Fitness Center{% endblock %}
+{% block header_title %}ATTENDANCE REPORT{% endblock %}
+
+{% block content %}
+<div class="mb-20">
+    <a href="{% url 'admin_attendance' %}" class="text-gold">← Back to Attendance Marking</a>
+</div>
+
+<div class="card mb-20">
+    <div class="card-header">
+        <h3 class="card-title">Filter Report Period</h3>
+    </div>
+    <form method="get" class="search-bar">
+        <select name="month">
+            <option value="1" {% if month == 1 %}selected{% endif %}>January</option>
+            <option value="2" {% if month == 2 %}selected{% endif %}>February</option>
+            <option value="3" {% if month == 3 %}selected{% endif %}>March</option>
+            <option value="4" {% if month == 4 %}selected{% endif %}>April</option>
+            <option value="5" {% if month == 5 %}selected{% endif %}>May</option>
+            <option value="6" {% if month == 6 %}selected{% endif %}>June</option>
+            <option value="7" {% if month == 7 %}selected{% endif %}>July</option>
+            <option value="8" {% if month == 8 %}selected{% endif %}>August</option>
+            <option value="9" {% if month == 9 %}selected{% endif %}>September</option>
+            <option value="10" {% if month == 10 %}selected{% endif %}>October</option>
+            <option value="11" {% if month == 11 %}selected{% endif %}>November</option>
+            <option value="12" {% if month == 12 %}selected{% endif %}>December</option>
+        </select>
+        <select name="year">
+            <option value="2026" {% if year == 2026 %}selected{% endif %}>2026</option>
+            <option value="2027" {% if year == 2027 %}selected{% endif %}>2027</option>
+            <option value="2028" {% if year == 2028 %}selected{% endif %}>2028</option>
+        </select>
+        <button type="submit" class="btn btn-outline">Generate Report</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Aggregate Summary: <span class="text-gold">{{ month_name }} {{ year }}</span></h3>
+    </div>
+
+    <div class="table-container">
+        {% if report %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Email / Phone</th>
+                        <th>Present Days count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in report %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600; color: #fff;">{{ item.user.get_full_name }}</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Username: {{ item.user.username }}</div>
+                            </td>
+                            <td>
+                                <div>{{ item.user.email }}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">{{ item.user.phone|default:"N/A" }}</div>
+                            </td>
+                            <td>
+                                <strong style="font-size: 1.1rem; color: var(--gold);">{{ item.total }}</strong> days
+                            </td>
+                            <td>
+                                <a href="{% url 'member_detail' item.user.id %}" class="btn btn-outline btn-sm">View details</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <h3>No membership activity records found for this period.</h3>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

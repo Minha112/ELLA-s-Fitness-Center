@@ -1,0 +1,121 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Reminder Center - ELLA's Fitness Center{% endblock %}
+{% block header_title %}REMINDER MANAGEMENT{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>Reminders & Notifications Control Panel</h2>
+    <form method="post" action="{% url 'send_bulk_reminders' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-gold">🚀 Trigger Bulk Reminders (Test Mode)</button>
+    </form>
+</div>
+
+<div class="grid-2">
+    <!-- Expiring Soon section -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Expiring Soon (Next 7 Days)</h3>
+            {% if expiring %}
+                <span class="badge badge-warning">{{ expiring.count }} Expiring</span>
+            {% endif %}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding: 5px 0;">
+            {% if expiring %}
+                {% for m in expiring %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <div>
+                            <div style="font-weight: 600; color: #fff;">{{ m.user.get_full_name }}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Expires on: {{ m.end_date|date:"d M Y" }}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">Days remaining: {{ m.days_remaining }} days</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <a href="{% url 'send_reminder' m.user.id 'expiry' %}" class="btn btn-outline btn-sm" style="font-size: 0.7rem; padding: 4px 8px;">Expiry Warning</a>
+                            <a href="{% url 'send_reminder' m.user.id 'fee' %}" class="btn btn-outline btn-sm" style="font-size: 0.7rem; padding: 4px 8px; border-color: var(--border-color); color: var(--text-secondary);">Fee Due</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state" style="padding: 20px;">
+                    <p>No active plans expiring in the next 7 days.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Overdue Memberships section -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Overdue/Expired Memberships</h3>
+            {% if overdue %}
+                <span class="badge badge-expired">{{ overdue.count }} Overdue</span>
+            {% endif %}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding: 5px 0;">
+            {% if overdue %}
+                {% for m in overdue %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <div>
+                            <div style="font-weight: 600; color: #fff;">{{ m.user.get_full_name }}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Expired on: {{ m.end_date|date:"d M Y" }}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">Plan: {{ m.get_plan_display }}</div>
+                        </div>
+                        <a href="{% url 'send_reminder' m.user.id 'overdue' %}" class="btn btn-danger btn-sm" style="font-size: 0.7rem; padding: 4px 8px;">Send Overdue Alert</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state" style="padding: 20px;">
+                    <p>No expired/overdue members needing reminders.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Reminder Logs -->
+<div class="card mt-20">
+    <div class="card-header">
+        <h3 class="card-title">Sent Reminder Logs (Recent activity)</h3>
+        <span class="badge badge-test">Test Mode Logs</span>
+    </div>
+    
+    <div class="table-container">
+        {% if recent_notifications %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recipient Member</th>
+                        <th>Alert Type</th>
+                        <th>Message Content</th>
+                        <th>Sent Date</th>
+                        <th>Channel status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notif in recent_notifications %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600; color: #fff;">{{ notif.user.get_full_name }}</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">{{ notif.user.phone|default:notif.user.email }}</div>
+                            </td>
+                            <td>
+                                <span class="badge badge-gold">{{ notif.get_notification_type_display }}</span>
+                            </td>
+                            <td style="font-size: 0.8rem; max-width: 350px;">{{ notif.message }}</td>
+                            <td>{{ notif.sent_at|date:"d M Y, h:i A" }}</td>
+                            <td>
+                                <span class="badge badge-active">WhatsApp Sent (Simulated)</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state" style="padding: 20px;">
+                <h3>No sent notifications history logged.</h3>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

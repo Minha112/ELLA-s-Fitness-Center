@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="layout">
+    {% include 'components/sidebar.html' %}
+    
+    <div class="main-content">
+        {% include 'components/header.html' %}
+        
+        <div class="page-content">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

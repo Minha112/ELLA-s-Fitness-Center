@@ -1,0 +1,20 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Remove Member - ELLA's Fitness Center{% endblock %}
+{% block header_title %}REMOVE MEMBER{% endblock %}
+
+{% block content %}
+<div class="confirm-delete card">
+    <div style="font-size: 3.5rem; margin-bottom: 15px;">⚠️</div>
+    <h2>Are you absolutely sure?</h2>
+    <p>You are about to permanently delete <strong>{{ member.get_full_name|default:member.username }}</strong>'s account. This action will erase all associated memberships, attendance logs, and payment histories and cannot be undone.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="confirm-actions">
+            <a href="{% url 'member_detail' member.id %}" class="btn btn-outline">Cancel & Keep Account</a>
+            <button type="submit" class="btn btn-danger">Yes, Delete Account</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Membership Checkout - ELLA's Fitness Center{% endblock %}
+{% block header_title %}MEMBERSHIP CHECKOUT{% endblock %}
+
+{% block content %}
+<div class="form-card card" style="max-width: 500px;">
+    <h3 class="mb-20" style="font-family: var(--font-heading); color: var(--gold);">Secure Payment Checkout</h3>
+
+    <div class="membership-info mb-20" style="background: rgba(255,255,255,0.01); padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <div class="plan-name" style="font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+            Selected Plan: {{ plan.name }} Membership
+        </div>
+        <div class="detail-row">
+            <span class="label">Plan Duration</span>
+            <span>{{ plan.duration }}</span>
+        </div>
+        <div class="detail-row" style="border-bottom: none;">
+            <span class="label">Total Amount</span>
+            <span style="font-size: 1.2rem; font-weight: 700; color: var(--gold-bright);">₹{{ plan.price }}</span>
+        </div>
+    </div>
+
+    <!-- Secure payment details block -->
+    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span>🛡️</span> <strong>Secure and Reliable Payments</strong>
+        </div>
+        <p>This is a simulated secure check-in screen representing Razorpay gateway test mode integration (UPI, Credit/Debit cards, Net Banking, and Wallets payments supported).</p>
+    </div>
+
+    <form method="post" action="{% url 'process_payment' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-gold btn-lg" style="width: 100%; justify-content: center;">
+            Proceed to Payment (Test Mode)
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="{% url 'join_gym' %}" class="text-muted" style="font-size: 0.8rem;">← Go back and change plan</a>
+    </div>
+</div>
+{% endblock %}

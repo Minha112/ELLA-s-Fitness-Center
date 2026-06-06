@@ -1,0 +1,97 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% load attendance_tags %}
+
+{% block title %}Attendance History - ELLA's Fitness Center{% endblock %}
+{% block header_title %}ATTENDANCE HISTORY{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>My Attendance Logs</h2>
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <span class="badge badge-gold" style="font-size: 0.72rem;">Morning Session (6 AM - 11 AM)</span>
+        <span class="badge badge-test" style="font-size: 0.72rem;">Evening Session (5 PM - 9 PM)</span>
+    </div>
+</div>
+
+<div class="grid-2" style="grid-template-columns: 2fr 1fr; gap: 20px;">
+    <!-- Calendar Card -->
+    <div class="card">
+        <div class="card-header" style="margin-bottom: 20px;">
+            <h3 class="card-title">{{ month_name }} {{ year }}</h3>
+            <div style="display: flex; gap: 5px;">
+                <!-- Navigation -->
+                {% if month == 1 %}
+                    <a href="?month=12&year={{ year|add:-1 }}" class="btn btn-outline btn-sm">◀ Prev</a>
+                {% else %}
+                    <a href="?month={{ month|add:-1 }}&year={{ year }}" class="btn btn-outline btn-sm">◀ Prev</a>
+                {% endif %}
+
+                {% if month == 12 %}
+                    <a href="?month=1&year={{ year|add:1 }}" class="btn btn-outline btn-sm">Next ▶</a>
+                {% else %}
+                    <a href="?month={{ month|add:1 }}&year={{ year }}" class="btn btn-outline btn-sm">Next ▶</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="calendar-grid">
+            <div class="calendar-header">Mon</div>
+            <div class="calendar-header">Tue</div>
+            <div class="calendar-header">Wed</div>
+            <div class="calendar-header">Thu</div>
+            <div class="calendar-header">Fri</div>
+            <div class="calendar-header">Sat</div>
+            <div class="calendar-header">Sun</div>
+
+            {% for week in calendar %}
+                {% for day in week %}
+                    {% if day == 0 %}
+                        <div class="calendar-day empty"></div>
+                    {% else %}
+                        {% filter_day_attendance attendance_map day as att %}
+                        <div class="calendar-day {% if day == today.day and month == today.month and year == today.year %}today{% endif %} {% if att %}present{% endif %}">
+                            <span>{{ day }}</span>
+                            {% if att %}
+                                <div class="sessions">
+                                    {% if att.morning_present %}
+                                        <div class="dot morning" title="Morning Session"></div>
+                                    {% endif %}
+                                    {% if att.evening_present %}
+                                        <div class="dot evening" title="Evening Session"></div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Monthly Summary</h3>
+        </div>
+        <div style="text-align: center; padding: 20px 0;">
+            <div style="font-size: 3rem; font-weight: 800; color: var(--gold); font-family: var(--font-heading);">
+                {{ total_present }}
+            </div>
+            <p class="text-secondary">Total Present Days</p>
+            <p class="text-muted" style="font-size: 0.8rem; margin-top: 5px;">Active days recorded this month.</p>
+        </div>
+
+        <div class="membership-info mt-20">
+            <div class="detail-row">
+                <span class="label">Morning Sessions</span>
+                <span class="text-gold">✔ Tracked</span>
+            </div>
+            <div class="detail-row" style="border-bottom: none;">
+                <span class="label">Evening Sessions</span>
+                <span class="text-gold">✔ Tracked</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

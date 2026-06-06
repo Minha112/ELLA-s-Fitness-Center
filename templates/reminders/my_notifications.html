@@ -1,0 +1,38 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}My Notifications - ELLA's Fitness Center{% endblock %}
+{% block header_title %}NOTIFICATIONS{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>My Notification Inbox</h2>
+    <span class="badge badge-gold">In-App Messages</span>
+</div>
+
+<div class="card" style="padding: 0;">
+    {% if notifications %}
+        {% for notif in notifications %}
+            <div class="notification-item">
+                <div class="notification-icon" style="background: rgba(212,168,67,0.15); color: var(--gold);">
+                    {% if notif.notification_type == 'FEE_REMINDER' %}💰
+                    {% elif notif.notification_type == 'EXPIRY_WARNING' %}⚠️
+                    {% elif notif.notification_type == 'OVERDUE' %}🚨
+                    {% else %}🔔
+                    {% endif %}
+                </div>
+                <div class="notification-content">
+                    <h4>{{ notif.title }}</h4>
+                    <p>{{ notif.message }}</p>
+                    <div class="notification-time">{{ notif.sent_at|date:"d M Y, h:i A" }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="icon">🔔</div>
+            <h3>Your notification inbox is clean</h3>
+            <p>We'll notify you here about your membership renewals, check-ins, or fee invoices.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

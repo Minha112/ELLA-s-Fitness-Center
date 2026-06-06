@@ -1,0 +1,139 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Admin Dashboard - ELLA's Fitness Center{% endblock %}
+{% block header_title %}ADMIN DASHBOARD{% endblock %}
+
+{% block content %}
+<div class="mb-20">
+    <h2>Management Dashboard</h2>
+    <p class="text-secondary">ELLA's Fitness Center business and activity metrics.</p>
+</div>
+
+<!-- Stats row -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon gold">👥</div>
+        <div class="stat-info">
+            <h3>{{ total_members }}</h3>
+            <p>Total Members</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info">
+            <h3>{{ active_members }}</h3>
+            <p>Active Members</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div class="stat-info">
+            <h3>{{ expired_members }}</h3>
+            <p>Expired/Unpaid</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue">💰</div>
+        <div class="stat-info">
+            <h3>₹{{ monthly_revenue }}</h3>
+            <p>This Month Revenue</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Today's Attendance Summary -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Attendance Summary (Today)</h3>
+            <span class="badge badge-gold">{{ today|date:"d M Y" }}</span>
+        </div>
+        <div class="text-center" style="padding: 20px 0;">
+            <div style="font-size: 3rem; font-weight: 800; color: var(--gold); font-family: var(--font-heading);">
+                {{ today_attendance }}
+            </div>
+            <p class="text-secondary mb-20">Members checked in today (Morning / Evening)</p>
+            <a href="{% url 'admin_attendance' %}" class="btn btn-gold">Mark & Manage Attendance</a>
+        </div>
+    </div>
+
+    <!-- Expiring Soon / Reminders -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Upcoming Expirations (Next 7 Days)</h3>
+            {% if expiring_soon %}
+                <span class="badge badge-expired">{{ expiring_soon.count }} Warning</span>
+            {% endif %}
+        </div>
+        
+        {% if expiring_soon %}
+            <div style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto;">
+                {% for m in expiring_soon %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                        <div>
+                            <div style="font-weight: 500; font-size: 0.85rem;">{{ m.user.get_full_name }}</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted);">Expires: {{ m.end_date|date:"d M Y" }} ({{ m.days_remaining }} days)</div>
+                        </div>
+                        <a href="{% url 'send_reminder' m.user.id 'expiry' %}" class="btn btn-outline btn-sm">Send Alert</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="mt-20">
+                <form method="post" action="{% url 'send_bulk_reminders' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-gold btn-sm" style="width: 100%; justify-content: center;">
+                        Send Bulk Expiry Reminders
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <div class="empty-state" style="padding: 30px 10px;">
+                <div class="icon">😊</div>
+                <h3>No upcoming membership expirations</h3>
+                <p>All members are fully active for the next week.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="card mt-20">
+    <div class="card-header">
+        <h3 class="card-title">Recent Transactions</h3>
+        <a href="{% url 'admin_payments' %}" class="btn btn-outline btn-sm">View All Payments</a>
+    </div>
+    <div class="table-container">
+        {% if recent_payments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Txn ID</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in recent_payments %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: #fff;">{{ payment.user.get_full_name }}</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">{{ payment.user.email }}</div>
+                            </td>
+                            <td><code>{{ payment.transaction_id }}</code></td>
+                            <td>₹{{ payment.amount }}</td>
+                            <td>{{ payment.created_at|date:"d M Y, h:i A" }}</td>
+                            <td><span class="badge badge-active">{{ payment.get_status_display }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state" style="padding: 20px;">
+                <h3>No payment transactions found</h3>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

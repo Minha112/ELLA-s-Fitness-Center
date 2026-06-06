@@ -1,0 +1,96 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Member Management - ELLA's Fitness Center{% endblock %}
+{% block header_title %}MEMBER MANAGEMENT{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h2>All Registered Members</h2>
+    <a href="{% url 'member_add' %}" class="btn btn-gold">+ Add New Member</a>
+</div>
+
+<!-- Search and filters -->
+<div class="card mb-20">
+    <form method="get" class="search-bar">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by name, email, phone number...">
+        <select name="status">
+            <option value="">All Membership Statuses</option>
+            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active Members</option>
+            <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>Expired Members</option>
+        </select>
+        <button type="submit" class="btn btn-outline">Search & Filter</button>
+        {% if query or status_filter %}
+            <a href="{% url 'member_list' %}" class="btn btn-danger">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Members Table -->
+<div class="card">
+    <div class="table-container">
+        {% if members %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email / Phone</th>
+                        <th>Current Plan</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in members %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600; color: #fff;">{{ m.user.get_full_name|default:m.user.username }}</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted);">Joined: {{ m.user.date_joined|date:"d M Y" }}</div>
+                            </td>
+                            <td>
+                                <div>{{ m.user.email }}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">{{ m.user.phone|default:"N/A" }}</div>
+                            </td>
+                            <td>
+                                {% if m.membership %}
+                                    {{ m.membership.get_plan_display }}
+                                {% else %}
+                                    <span class="text-muted">None</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if m.membership %}
+                                    {{ m.membership.end_date|date:"d M Y" }}
+                                    <div style="font-size: 0.72rem; color: var(--text-muted);">({{ m.membership.days_remaining }} days remaining)</div>
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if m.membership %}
+                                    <span class="badge badge-active">Active</span>
+                                {% else %}
+                                    <span class="badge badge-expired">Expired</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <a href="{% url 'member_detail' m.user.id %}" class="btn btn-outline btn-sm" title="View Profile">👁️</a>
+                                    <a href="{% url 'member_edit' m.user.id %}" class="btn btn-outline btn-sm" title="Edit Profile">✏️</a>
+                                    <a href="{% url 'member_delete' m.user.id %}" class="btn btn-danger btn-sm" title="Remove Member">🗑️</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">🔍</div>
+                <h3>No members matching search query</h3>
+                <p>Try refining your search text or changing the filters.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

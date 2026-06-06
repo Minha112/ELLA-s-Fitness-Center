@@ -1,0 +1,41 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Choose Membership Plan - ELLA's Fitness Center{% endblock %}
+{% block header_title %}JOIN / RENEW GYM{% endblock %}
+
+{% block content %}
+<div class="mb-20">
+    <h2>Choose Your Membership Plan</h2>
+    <p class="text-secondary">Select the package that fits your fitness goals. Payments are processed in Test Mode.</p>
+</div>
+
+<div class="plans-grid">
+    {% for plan in plans %}
+        <div class="plan-card">
+            <h3>{{ plan.name }} Membership</h3>
+            <div class="price">₹{{ plan.price }}</div>
+            <div class="duration">{{ plan.duration }} Validity</div>
+            
+            <div style="text-align: left; margin: 20px 0 30px; font-size: 0.85rem; color: var(--text-secondary);">
+                <div style="margin-bottom: 8px;">✓ Gym Access (Both Sessions)</div>
+                <div style="margin-bottom: 8px;">✓ Cardio & Strength Section</div>
+                {% if plan.key == '3_MONTH' or plan.key == '6_MONTH' %}
+                    <div style="margin-bottom: 8px;">✓ Locker Room Access</div>
+                    <div style="margin-bottom: 8px;">✓ Personal Trainer Assistance</div>
+                {% endif %}
+                {% if plan.key == '6_MONTH' %}
+                    <div style="margin-bottom: 8px;">✓ Diet Consultation</div>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'select_plan' plan.key %}" class="btn btn-gold" style="width: 100%; justify-content: center;">
+                Select & Proceed
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="card mt-20 text-center">
+    <p class="text-secondary">Need help selecting a plan? Contact our desk counter or support team.</p>
+</div>
+{% endblock %}

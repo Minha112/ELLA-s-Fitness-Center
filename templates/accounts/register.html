@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Account - ELLA's Fitness Center{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-card" style="max-width: 480px;">
+        <div class="auth-brand">
+            <h1>ELLA'S</h1>
+            <p>FITNESS CENTER</p>
+            <h3 class="mt-10" style="font-weight: 500; font-size: 1.1rem; color: var(--gold);">Create Account</h3>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <span class="form-error">{{ form.first_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <span class="form-error">{{ form.last_name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <span class="form-error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email Address</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <span class="form-error">{{ form.email.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                    <span class="form-error">{{ form.phone.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <span class="form-error">{{ form.password1.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <span class="form-error">{{ form.password2.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; margin-top: 10px;">
+                Register
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+            <br>
+            <a href="{% url 'home' %}" style="display: inline-block; margin-top: 15px; font-size: 0.75rem; color: var(--text-muted);">← Back to Homepage</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

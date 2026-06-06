@@ -1,0 +1,15 @@
+<div class="header">
+    <div class="header-left">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <h1>{% block header_title %}ELLA'S FITNESS CENTER{% endblock %}</h1>
+    </div>
+    <div class="header-right">
+        <div class="header-user">
+            <div class="avatar">
+                {{ user.first_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
+            </div>
+            <span>{{ user.get_full_name|default:user.username }}</span>
+            <span class="badge badge-gold" style="font-size: 0.65rem;">{{ user.get_role_display }}</span>
+        </div>
+    </div>
+</div>

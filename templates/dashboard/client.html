@@ -1,0 +1,141 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Client Dashboard - ELLA's Fitness Center{% endblock %}
+{% block header_title %}CLIENT DASHBOARD{% endblock %}
+
+{% block content %}
+<div class="mb-20">
+    <h2>Welcome back, {{ user.first_name|default:user.username }}!</h2>
+    <p class="text-secondary">Track your gym active status, payments, and attendance below.</p>
+</div>
+
+<div class="grid-2">
+    <!-- Membership Status Card -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Membership Status</h3>
+            {% if membership %}
+                <span class="badge badge-active">Active</span>
+            {% else %}
+                <span class="badge badge-expired">No Active Plan</span>
+            {% endif %}
+        </div>
+
+        {% if membership %}
+            <div class="membership-card">
+                <!-- Progress ring -->
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" width="100" height="100">
+                        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="40" 
+                                stroke-dasharray="251.2" 
+                                stroke-dashoffset="{{ 251.2|slice:":0" }}"
+                                style="stroke-dashoffset: calc(251.2 - (251.2 * {{ membership.progress_percentage }}) / 100);" />
+                    </svg>
+                    <div class="progress-ring-text">
+                        <div class="days">{{ membership.days_remaining }}</div>
+                        <div class="label">Days Left</div>
+                    </div>
+                </div>
+
+                <div class="membership-info">
+                    <div class="plan-name">{{ membership.get_plan_display }} Package</div>
+                    <div class="detail-row">
+                        <span class="label">Validity Period</span>
+                        <span>{{ membership.start_date|date:"d M Y" }} - {{ membership.end_date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Last Payment Date</span>
+                        <span>{{ last_payment.created_at|date:"d M Y"|default:"N/A" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Next Due Date</span>
+                        <span>{{ membership.end_date|date:"d M Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if membership.is_expiring_soon %}
+                <div class="messages mt-20" style="margin-bottom: 0;">
+                    <div class="warning" style="padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                        ⚠️ Your membership is expiring soon! Renew now to avoid any entry interruptions.
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state" style="padding: 30px 10px;">
+                <div class="icon">🏋️‍♂️</div>
+                <h3>No active membership found</h3>
+                <p class="mb-20">Subscribe to a membership plan to start tracking your progress.</p>
+                <a href="{% url 'join_gym' %}" class="btn btn-gold">Choose a Plan Now</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Stats & Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Gym Activity Overview</h3>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <div class="stat-card" style="padding: 12px; gap: 10px;">
+                <div class="stat-icon gold" style="width: 36px; height: 36px; font-size: 1.1rem;">📅</div>
+                <div class="stat-info">
+                    <h3 style="font-size: 1.1rem;">{{ month_attendance }}</h3>
+                    <p style="font-size: 0.72rem;">Days This Month</p>
+                </div>
+            </div>
+            <div class="stat-card" style="padding: 12px; gap: 10px;">
+                <div class="stat-icon blue" style="width: 36px; height: 36px; font-size: 1.1rem;">🔔</div>
+                <div class="stat-info">
+                    <h3 style="font-size: 1.1rem;">{{ unread_notifications }}</h3>
+                    <p style="font-size: 0.72rem;">Unread Alerts</p>
+                </div>
+            </div>
+        </div>
+
+        <h4 style="font-family: var(--font-heading); font-size: 0.9rem; margin-bottom: 12px;">Quick Actions</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            {% if not membership %}
+                <a href="{% url 'join_gym' %}" class="btn btn-gold" style="justify-content: center;">Renew Membership</a>
+            {% else %}
+                <a href="{% url 'join_gym' %}" class="btn btn-outline" style="justify-content: center;">Renew / Upgrade Plan</a>
+            {% endif %}
+            <a href="{% url 'client_attendance' %}" class="btn btn-outline" style="justify-content: center;">View Full Attendance Calendar</a>
+            <a href="{% url 'my_notifications' %}" class="btn btn-outline" style="justify-content: center;">View Notifications</a>
+        </div>
+    </div>
+</div>
+
+{% if last_payment %}
+    <div class="card mt-20">
+        <div class="card-header">
+            <h3 class="card-title">Recent Payment Receipt</h3>
+            <span class="badge badge-test">Verified</span>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Txn ID</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ last_payment.created_at|date:"d M Y, h:i A" }}</td>
+                        <td><code>{{ last_payment.transaction_id }}</code></td>
+                        <td>₹{{ last_payment.amount }}</td>
+                        <td>{{ last_payment.payment_method }}</td>
+                        <td><span class="badge badge-active">Paid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

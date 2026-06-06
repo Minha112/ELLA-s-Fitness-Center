@@ -1,0 +1,114 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}My Membership - ELLA's Fitness Center{% endblock %}
+{% block header_title %}MY MEMBERSHIP{% endblock %}
+
+{% block content %}
+<div class="grid-2">
+    <!-- Active Membership Details -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Active Membership</h3>
+            {% if active_membership %}
+                <span class="badge badge-active">Active</span>
+            {% else %}
+                <span class="badge badge-expired">No Active Plan</span>
+            {% endif %}
+        </div>
+
+        {% if active_membership %}
+            <div class="membership-card">
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" width="100" height="100">
+                        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="40" 
+                                stroke-dasharray="251.2" 
+                                style="stroke-dashoffset: calc(251.2 - (251.2 * {{ active_membership.progress_percentage }}) / 100);" />
+                    </svg>
+                    <div class="progress-ring-text">
+                        <div class="days">{{ active_membership.days_remaining }}</div>
+                        <div class="label">Days Left</div>
+                    </div>
+                </div>
+
+                <div class="membership-info">
+                    <div class="plan-name">{{ active_membership.get_plan_display }} Package</div>
+                    <div class="detail-row">
+                        <span class="label">Plan Start Date</span>
+                        <span>{{ active_membership.start_date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Validity Expiry</span>
+                        <span>{{ active_membership.end_date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Price paid</span>
+                        <span>₹{{ active_membership.amount }}</span>
+                    </div>
+                    <div class="detail-row" style="border-bottom: none;">
+                        <span class="label">Auto-Renewal</span>
+                        <span class="text-muted">Off (Manual)</span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state" style="padding: 30px 10px;">
+                <div class="icon">🏋️‍♂️</div>
+                <h3>No active membership found</h3>
+                <p class="mb-20">Access to the fitness gym section requires an active membership subscription.</p>
+                <a href="{% url 'join_gym' %}" class="btn btn-gold">Browse Plans & Join</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Upgrade Information / Support -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Plan Renewals & Upgrades</h3>
+        </div>
+        <p class="text-secondary mb-20">You can renew or upgrade your package at any time. The remaining days of your current active membership will be preserved and appended to the new validity period.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <a href="{% url 'join_gym' %}" class="btn btn-gold" style="justify-content: center;">Renew / Upgrade Plan</a>
+            <a href="{% url 'payment_history' %}" class="btn btn-outline" style="justify-content: center;">View Payment Receipts</a>
+        </div>
+    </div>
+</div>
+
+<!-- Past Memberships -->
+<div class="card mt-20">
+    <div class="card-header">
+        <h3 class="card-title">Past Memberships</h3>
+    </div>
+    <div class="table-container">
+        {% if past_memberships %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Amount Paid</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in past_memberships %}
+                        <tr>
+                            <td>{{ m.get_plan_display }}</td>
+                            <td>{{ m.start_date|date:"d M Y" }}</td>
+                            <td>{{ m.end_date|date:"d M Y" }}</td>
+                            <td>₹{{ m.amount }}</td>
+                            <td><span class="badge badge-expired">{{ m.get_status_display }}</span></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state" style="padding: 20px;">
+                <h3>No past membership history.</h3>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
