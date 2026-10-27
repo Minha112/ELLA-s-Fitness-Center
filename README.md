@@ -67,7 +67,7 @@ Open `http://127.0.0.1:8000/` in your browser to access the application.
   
 ## Screenshots
 
-Screenshot 2026-10-27 111035.png
+screenshots/Screenshot 2026-10-27 111035.png
 
 Screenshot 2026-10-27 113341.png
 
