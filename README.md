@@ -64,6 +64,20 @@ Open `http://127.0.0.1:8000/` in your browser to access the application.
 * `reminders/` - Reminder functionality
 * `templates/` - HTML templates
 * `static/` - Static files such as CSS and JavaScript
+  
+## Screenshots
+
+Screenshot 2026-10-27 111035.png
+
+Screenshot 2026-10-27 113341.png
+
+Screenshot 2026-10-27 113351.png
+
+Screenshot 2026-10-27 113446.png
+
+Screenshot 2026-10-27 113506.png
+
+Screenshot 2026-10-27 165925.png
 
 ## Project Objective
 
