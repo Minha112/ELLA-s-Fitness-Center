@@ -1,3 +1,4 @@
+<img width="960" height="540" alt="Screenshot 2026-10-27 165925" src="https://github.com/user-attachments/assets/1cbfbeb2-4c70-471e-abc9-cc5fe7b7d650" />
 ﻿# ELLA's Fitness Center
 
 ELLA's Fitness Center is a web-based gym management application developed using Django. It helps manage gym operations, including member records, attendance, payments, and reminders through a centralized platform.
