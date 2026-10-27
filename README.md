@@ -1,3 +1,8 @@
+<img width="960" height="540" alt="Screenshot 2026-10-27 111035" src="https://github.com/user-attachments/assets/6f83c5ee-4657-4017-acb7-2cd84d07debb" />
+<img width="960" height="540" alt="Screenshot 2026-10-27 113341" src="https://github.com/user-attachments/assets/fdd5bb84-8ab4-4f6d-83fc-bf1df1e91b1f" />
+<img width="960" height="540" alt="Screenshot 2026-10-27 113351" src="https://github.com/user-attachments/assets/9d264d3a-241e-447d-a6e7-5b03203161c9" />
+<img width="960" height="540" alt="Screenshot 2026-10-27 113446" src="https://github.com/user-attachments/assets/a616e939-3352-43f6-a3f2-723ee5ca287b" />
+<img width="960" height="540" alt="Screenshot 2026-10-27 113506" src="https://github.com/user-attachments/assets/0e746769-7f49-441e-b904-21d136b0bbf1" />
 <img width="960" height="540" alt="Screenshot 2026-10-27 165925" src="https://github.com/user-attachments/assets/1cbfbeb2-4c70-471e-abc9-cc5fe7b7d650" />
 ﻿# ELLA's Fitness Center
 
